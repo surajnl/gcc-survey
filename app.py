@@ -205,6 +205,20 @@ def get_count():
     submissions = load_submissions()
     return jsonify({'count': len(submissions)})
 
+@app.route('/api/clear', methods=['POST'])
+def clear_data():
+    try:
+        data = request.json
+        if data.get('password') != ADMIN_PASSWORD:
+            return jsonify({'success': False, 'error': 'Invalid password'}), 401
+        
+        if os.path.exists(DATA_FILE):
+            os.remove(DATA_FILE)
+        
+        return jsonify({'success': True, 'message': 'All data cleared successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
