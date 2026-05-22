@@ -48,6 +48,18 @@ def submit_survey():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+# NEW: Dedicated password verification endpoint (no file download)
+@app.route('/api/verify', methods=['POST'])
+def verify_password():
+    try:
+        data = request.json
+        if data.get('password') == ADMIN_PASSWORD:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Invalid password'}), 401
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/api/download', methods=['POST'])
 def download_excel():
     try:
@@ -200,7 +212,6 @@ def download_excel():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-# NEW: Clear all data endpoint
 @app.route('/api/clear', methods=['POST'])
 def clear_data():
     try:
