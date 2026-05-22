@@ -373,17 +373,20 @@
             document.getElementById('adminPassword').value = '';
         }
 
+        // FIX: Use /api/verify for login validation (not /api/download)
         async function verifyAdmin() {
             const password = document.getElementById('adminPassword').value;
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/download`, {
+                const response = await fetch(`${API_BASE_URL}/api/verify`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: password })
                 });
 
-                if (response.ok) {
+                const result = await response.json();
+
+                if (result.success) {
                     adminPasswordStored = password;
                     document.getElementById('adminPanel').classList.add('active');
                     closeAdminLogin();
@@ -497,7 +500,6 @@
             }
         }
 
-        // NEW: Clear all data function
         async function clearAllData() {
             const password = adminPasswordStored;
 
